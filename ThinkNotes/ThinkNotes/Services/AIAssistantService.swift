@@ -77,6 +77,10 @@ actor AIAssistantService {
             userPrompt += "\n\nWeb research context:\n\(webContext)"
         }
 
+        if context.hasDrawing, drawingData != nil {
+            userPrompt += "\n\n[A diagram/sketch is attached — analyze it for HLD/architecture feedback.]"
+        }
+
         var contentParts: [OpenAIChatRequest.Message.ContentPart] = [
             .text(userPrompt)
         ]
@@ -84,7 +88,6 @@ actor AIAssistantService {
         if context.hasDrawing, let data = drawingData,
            let base64 = CanvasSnapshot.pngBase64(from: data) {
             contentParts.append(.image(base64PNG: base64))
-            userPrompt += "\n\n[A diagram/sketch is attached — analyze it for HLD/architecture feedback.]"
         }
 
         let request = OpenAIChatRequest(
